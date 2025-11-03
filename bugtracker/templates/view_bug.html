@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<h1>{{ bug.title }}</h1>
+<p>{{ bug.description }}</p>
+<p>Upvotes: {{ bug.upvotes }} | Downvotes: {{ bug.downvotes }} | Total Score: {{ bug.score }}</p>
+<button id="upvote-btn">Upvote</button>
+<button id="downvote-btn">Downvote</button>
+
+<a href="{% url 'index' %}">Back to Bug List</a>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+        let up_btn = document.getElementById("upvote-btn");
+        let down_btn = document.getElementById("downvote-btn");
+        const accessToken = localStorage.getItem('access');
+        if (!accessToken) {
+            up_btn.disabled = true;
+            down_btn.disabled = true;
+        }
+        else
+        {
+            up_btn.addEventListener("click", function(){
+                fetch("{% url 'upvote' bug.id %}", {
+                    method: 'POST',
+                    body: JSON.stringify({ value: 1 }),
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + accessToken
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.error) {
+                        alert("Upvoted successfully!");
+                        location.reload();
+                    } else {
+                        alert('Error during upvote: ' + data.error.join(', '));
+                    }
+                });
+            });
+
+            down_btn.addEventListener("click", function(){
+                fetch("{% url 'downvote' bug.id %}", {
+                    method: 'POST',
+                    body: JSON.stringify({ value: -1 }),
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + accessToken
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.error) {
+                        alert("Downvoted successfully!");
+                        location.reload();
+                    } else {
+                        alert('Error during downvote: ' + data.error.join(', '));
+                    }
+                });
+            });
+        }
+    })
+</script>
+
+{% endblock %}

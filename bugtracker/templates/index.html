@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <h1>Bug List</h1>
+    <ul>
+        {% for bug in bugs %}
+            <a href="{% url 'view_bug' bug.id %}">
+                <li>
+                    <h2>{{ bug.title }}</h2>
+                    <p>{{ bug.description }}</p>
+                    <p>Upvotes: {{ bug.upvotes }} | Downvotes: {{ bug.downvotes }} | Total Score: {{ bug.score }}</p>
+                </li>
+            </a>
+        {% empty %}
+            <li>No bugs found for now.</li>
+        {% endfor %}
+    </ul>
+    <div id="add-bug">
+        <h2>Report a New Bug</h2>
+        <form>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit Bug</button>
+        </form>
+        <button onclick="localStorage.removeItem('access'); localStorage.removeItem('refresh'); location.reload();">Log Out</button>
+    </div>
+    <p id="login-prompt"><a href="{% url 'login_view' %}">Log in</a> to report a new bug.</p>
+
+    <script>
+        // handle form submission via AJAX
+        document.addEventListener('DOMContentLoaded', function() {
+        const accessToken = localStorage.getItem('access');
+        if (accessToken) {
+            document.getElementById('add-bug').style.display = 'block';
+            document.getElementById('login-prompt').style.display = 'none';
+        } else {
+            document.getElementById('add-bug').style.display = 'none';
+            document.getElementById('login-prompt').style.display = 'block';
+        }
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const title = form.querySelector('input[name="title"]').value;
+            const description = form.querySelector('textarea[name="description"]').value;
+            if ( !localStorage.getItem('access') )
+            {
+
+            }
+            fetch("{% url 'create_bug' %}", {
+                method: 'POST',
+                body: JSON.stringify({ title, description }),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + accessToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert ("Bug report submitted successfully!");
+                    location.reload();
+                } else {
+                    // Handle errors
+                    alert('Error submitting bug report: ' + data.errors );
+                }
+            });
+        });
+    });
+    </script>
+
+{% endblock %}
