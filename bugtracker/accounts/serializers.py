@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .util import get_token
+from core.util import get_token
 from django.contrib.auth import authenticate
 
 

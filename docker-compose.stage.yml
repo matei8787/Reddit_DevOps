@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./bugtracker
+    image: ghcr.io/matei8787/Reddit_DevOps-web:latest
+    env_file:
+      - ./.env/.stage
+    environment:
+      - ENV_TYPE=prod
+    command: gunicorn bugtracker.wsgi:application --bind 0.0.0.0:8001
+    expose:
+      - 8001
+    depends_on:
+      - db
+    networks:
+      - bugtracker_network
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+
+  db:
+    image: postgres:latest
+    volumes:
+      - postgres_vol:/var/postgres/data
+    env_file:
+      - ./.env/.db
+    environment:
+      - PGDATA=/var/postgres/data
+    ports:
+      - 5432:5432
+    networks:
+      - bugtracker_network
+  
+  nginx:
+    image: ghcr.io/matei8787/Reddit_DevOps-nginx:latest
+    build: ./nginx
+    volumes:
+      - static_volume:/home/app/web/staticfiles:ro
+    ports:
+      - 1337:80
+    networks:
+      - bugtracker_network
+    env_file:
+      - ./nginx/env/stage.env
+    depends_on:
+      - web
+
+
+volumes:
+  postgres_vol:
+  static_volume:
+
+networks:
+  bugtracker_network:

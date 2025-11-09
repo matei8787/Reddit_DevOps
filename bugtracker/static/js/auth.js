@@ -25,7 +25,7 @@ async function refreshAccessToken() {
     const refreshToken = localStorage.getItem("refresh_token");
     if (!refreshToken) return;
 
-    const response = await fetch("/api/token/refresh/", {
+    const response = await fetch("/auth/api/token/refresh/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refresh: refreshToken })
@@ -39,7 +39,7 @@ async function refreshAccessToken() {
         // refresh token dead → require login
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        window.location.href = "/login/";
+        window.location.href = "/auth/login/";
     }
 }
 
