@@ -32,8 +32,8 @@ services:
       - bugtracker_network
   
   nginx:
-    image: ghcr.io/matei8787/Reddit_DevOps-nginx:latest
     build: ./nginx
+    image: ghcr.io/matei8787/Reddit_DevOps-nginx:latest
     volumes:
       - static_volume:/home/app/web/staticfiles:ro
     ports:
