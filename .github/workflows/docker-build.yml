@@ -33,7 +33,7 @@ jobs:
                 POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
                 EOF
             - name: Build the images
-              run: make stage_up
+              run: docker-compose -f docker-compose.stage.yml build
             - name: Login docker
               uses: docker/login-action@v3
               with:
