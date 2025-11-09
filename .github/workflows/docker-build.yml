@@ -7,19 +7,39 @@ on:
 
 jobs:
     build:
+        environment: stage
         name: Building the image
         runs-on: self-hosted
         steps:
             - name: Get code
               uses: actions/checkout@v5
+            - name: Make env
+              run: |
+                mkdir -p .env/.stage
+                mkdir -p .env/.db
+                cat << EOF > .env/.stage
+                DJANGO_SETTINGS_MODULE=${{ secrets.DJANGO_SETTINGS_MODULE }}
+                SECRET_KEY=${{ secrets.SECRET_KEY }}
+                DEBUG=${{ secrets.DEBUG }}
+                DB_NAME=${{ secrets.DB_NAME }}
+                DB_USER=${{ secrets.DB_USER }}
+                DB_PASS=${{ secrets.DB_PASS }}
+                DB_HOST=${{ secrets.DB_HOST }}
+                DB_PORT=${{ secrets.DB_PORT }}
+                EOF
+                cat << EOF > .env/.db
+                POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+                POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+                POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+                EOF
+            - name: Build the images
+              run: make stage_up
             - name: Login docker
               uses: docker/login-action@v3
               with:
                 registry: ghcr.io
                 username: ${{ github.actor }}
                 password: ${{ secrets.GITHUB_TOKEN }}
-            - name: Build the image
-              run: make stage_up
             - name: Push the images
               run: |
                     images=("ghcr.io/matei8787/Reddit_DevOps-web:latest" "ghcr.io/matei8787/Reddit_DevOps-nginx:latest")
