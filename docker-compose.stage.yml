@@ -3,7 +3,7 @@ version: '3.8'
 services:
   web:
     build: ./bugtracker
-    image: ghcr.io/matei8787/Reddit_DevOps-web:latest
+    image: ghcr.io/matei8787/reddit_devops-web:latest
     env_file:
       - ./.env/.stage
     environment:
@@ -32,7 +32,7 @@ services:
       - bugtracker_network
   
   nginx:
-    image: ghcr.io/matei8787/Reddit_DevOps-nginx:latest
+    image: ghcr.io/matei8787/reddit-devops-nginx:latest
     build: ./nginx
     volumes:
       - static_volume:/home/app/web/staticfiles:ro
