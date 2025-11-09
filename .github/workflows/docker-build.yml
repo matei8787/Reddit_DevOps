@@ -47,7 +47,7 @@ jobs:
               run: |
                     images=("ghcr.io/matei8787/reddit_devops-web:latest" "ghcr.io/matei8787/reddit_devops-nginx:latest")
                     for image in "${images[@]}"; do
-                        docker push $image
+                        docker-compose -f docker-compose.stage.yml push
                     done
             - name: Delete environment variables
               run: rm -rf .env
