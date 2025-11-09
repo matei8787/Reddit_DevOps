@@ -48,6 +48,7 @@ services:
 
 
 
+
 volumes:
   postgres_vol:
   static_volume:
