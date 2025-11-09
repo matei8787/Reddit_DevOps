@@ -42,7 +42,7 @@ jobs:
                 password: ${{ secrets.GITHUB_TOKEN }}
             - name: Push the images
               run: |
-                    images=("ghcr.io/matei8787/Reddit_DevOps-web:latest" "ghcr.io/matei8787/Reddit_DevOps-nginx:latest")
+                    images=("ghcr.io/matei8787/reddit_devops-web:latest" "ghcr.io/matei8787/reddit_devops-nginx:latest")
                     for image in "${images[@]}"; do
                         docker push $image
                     done
