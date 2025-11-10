@@ -37,5 +37,3 @@ jobs:
                     chmod +x $UPDATE_SCRIPT && \
                     (crontab -l 2>/dev/null | grep -qxF "0 * * * * $UPDATE_SCRIPT >> ${UPDATE_SCRIPT%/*}/update.log 2>&1") || \
                     (crontab -l 2>/dev/null; echo "0 * * * * $UPDATE_SCRIPT >> ${UPDATE_SCRIPT%/*}/update.log 2>&1") | crontab -
-
-                        
