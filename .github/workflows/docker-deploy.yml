@@ -15,7 +15,7 @@ jobs:
         name: Deploy the app
         runs-on: self-hosted
         container:
-            image: ubuntu:latest
+            image: alpine:latest
             options: --network=host
         steps:
             - name: Get Code
