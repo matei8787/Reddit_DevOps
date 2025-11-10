@@ -24,9 +24,10 @@ jobs:
             - name: Copy the update script on the server
               run: |
                 scp -P 2222 -i ${{ env.KEY_FILE }} ./update.sh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }}:$UPDATE_SCRIPT
+                scp -P 2222 -i ${{ env.KEY_FILE }} ./docker-compose.stage.yml ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }}:${UPDATE_SCRIPT%/*}/docker-compose.stage.yml
             - name: SSH Deploy
               run: |
-                ssh -i ${{ env.KEY_FILE }} -p 2222 ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }} << 'EOF'
+                ssh -i ${{ env.KEY_FILE }} -p 2222 ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }} "UPDATE_SCRIPT='$UPDATE_SCRIPT' bash -s" << 'EOF'
                 chmod +x $UPDATE_SCRIPT && \
                 (crontab -l 2>/dev/null | grep -qxF "0 * * * * $UPDATE_SCRIPT >> ${UPDATE_SCRIPT%/*}/update.log 2>&1") || \
                 (crontab -l 2>/dev/null; echo "0 * * * * $UPDATE_SCRIPT >> ${UPDATE_SCRIPT%/*}/update.log 2>&1") | crontab -
