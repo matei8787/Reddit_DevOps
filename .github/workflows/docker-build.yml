@@ -19,7 +19,6 @@ jobs:
             - name: Make env
               run: |
                 mkdir -p .env
-                mkdir -p .env
                 cat << EOF > .env/.stage
                 DJANGO_SETTINGS_MODULE=${{ secrets.DJANGO_SETTINGS_MODULE }}
                 SECRET_KEY=${{ secrets.SECRET_KEY }}

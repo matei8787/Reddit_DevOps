@@ -1,0 +1,33 @@
+name: Deployment
+run-name: ${{ github.actor }} is deploying the app
+
+on:
+    workflow_run:
+        workflows: ["Docker-Build"]
+        types: ["completed"]
+
+jobs:
+    deploy:
+        environment: stage
+        env:
+            UPDATE_SCRIPT: /home/${{ secrets.DEPLOYMENT_USER }}/update.sh
+        name: Deploy the app
+        runs-on: self-hosted
+        steps:
+            - name: Get Code
+              uses: actions/checkout@v5
+            - name: Copy the update script on the server
+              run: |
+                
+                scp -i ${{ secrets.SSH_DEPLOYMENT_KEY }} ./update.sh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }}:$UPDATE_SCRIPT
+            - name: SSH Deploy
+              uses:  appleboy/ssh-action@v0.1.9
+              with:
+                host: ${{ secrets.DEPLOYMENT_HOST }}
+                username: ${{ secrets.DEPLOYMENT_USER }}
+                key: ${{ secrets.SSH_DEPLOYMENT_KEY }}
+                port: 2222
+                script: |
+                    chmod +x $UPDATE_SCRIPT
+                    (crontab -l 2>/dev/null | grep -qxF "0 * * * * $UPDATE_SCRIPT >> ${UPDATE_SCRIPT%/*}/update.log 2>&1") || \
+                    (crontab -l 2>/dev/null; echo "0 * * * * $UPDATE_SCRIPT >> ${UPDATE_SCRIPT%/*}/update.log 2>&1") | crontab -
