@@ -18,7 +18,7 @@ jobs:
               uses: actions/checkout@v5
             - name: Create the secret key file to use
               run: |
-                echo "${{ secrets.SSH_DEPLOYMENT_KEY }}"" >> ./github_actions_key
+                echo "${{ secrets.SSH_DEPLOYMENT_KEY }} >> ./github_actions_key
                 chmod 600 ./github_actions_key
             - name: Copy the update script on the server
               run: |
