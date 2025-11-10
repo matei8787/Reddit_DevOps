@@ -29,7 +29,7 @@ jobs:
               with:
                 host: ${{ secrets.DEPLOYMENT_LOCAL_HOST }}
                 username: ${{ secrets.DEPLOYMENT_USER }}
-                key: ${{ env.KEY_FILE }}
+                key: ${{ secrets.SSH_DEPLOYMENT_KEY }}
                 port: 2222
                 envs: |
                     UPDATE_SCRIPT=${{ env.UPDATE_SCRIPT }}
