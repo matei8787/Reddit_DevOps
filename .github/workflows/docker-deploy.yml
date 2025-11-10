@@ -22,7 +22,7 @@ jobs:
                 chmod 600 ./github_actions_key
             - name: Copy the update script on the server
               run: |
-                scp -P 2222 -i ./github_actions_key ./update.sh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }}:$UPDATE_SCRIPT
+                scp -P 2222 -i ./github_actions_key ./update.sh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }}:$UPDATE_SCRIPT
             - name: SSH Deploy
               uses:  appleboy/ssh-action@v0.1.9
               with:
