@@ -41,9 +41,12 @@ jobs:
                 chmod 600 ${{ env.KEY_FILE }}
             - name: Copy the update script on the server
               run: |
-                ssh -p 2222 -i ${{ env.KEY_FILE }} ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }} 'mkdir -p /home/${{ secrets.DEPLOYMENT_USER }}/.env'
                 scp -P 2222 -i ${{ env.KEY_FILE }} update.sh docker-compose.stage.yml .env/.stage .env/.db \
                 ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }}:${UPDATE_SCRIPT%/*}
+                ssh -p 2222 -i ${{ env.KEY_FILE }} ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }} "UPDATE_SCRIPT='$UPDATE_SCRIPT' bash -s" << 'EOF'
+                mkdir -p ${UPDATE_SCRIPT%/*}/.env && \
+                mv .stage .env/.stage
+                mv .db .env/.db
             - name: SSH Deploy
               run: |
                 ssh -i ${{ env.KEY_FILE }} -p 2222 ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }} "UPDATE_SCRIPT='$UPDATE_SCRIPT' bash -s" << 'EOF'
