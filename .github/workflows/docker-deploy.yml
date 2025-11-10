@@ -27,7 +27,7 @@ jobs:
             - name: SSH Deploy
               uses:  appleboy/ssh-action@v0.1.9
               with:
-                host: ${{ secrets.DEPLOYMENT_HOST }}
+                host: ${{ secrets.DEPLOYMENT_LOCAL_HOST }}
                 username: ${{ secrets.DEPLOYMENT_USER }}
                 key: ${{ secrets.SSH_DEPLOYMENT_KEY }}
                 port: 2222
