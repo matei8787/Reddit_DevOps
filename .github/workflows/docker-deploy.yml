@@ -16,10 +16,13 @@ jobs:
         steps:
             - name: Get Code
               uses: actions/checkout@v5
+            - name: Create the secret key file to use
+              run: |
+                echo ${{ secrets.SSH_DEPLOYMENT_KEY }} >> ./github_actions_key
+                chmod 600 ./github_actions_key
             - name: Copy the update script on the server
               run: |
-                
-                scp -i ${{ secrets.SSH_DEPLOYMENT_KEY }} ./update.sh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }}:$UPDATE_SCRIPT
+                scp -i ./github_actions_key ./update.sh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }}:$UPDATE_SCRIPT
             - name: SSH Deploy
               uses:  appleboy/ssh-action@v0.1.9
               with:
