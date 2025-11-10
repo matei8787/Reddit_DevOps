@@ -11,6 +11,7 @@ jobs:
         environment: stage
         env:
             UPDATE_SCRIPT: /home/${{ secrets.DEPLOYMENT_USER }}/update.sh
+            KEY_FILE: ./github_actions_key
         name: Deploy the app
         runs-on: self-hosted
         steps:
@@ -18,17 +19,17 @@ jobs:
               uses: actions/checkout@v5
             - name: Create the secret key file to use
               run: |
-                echo "${{ secrets.SSH_DEPLOYMENT_KEY }}" >> ./github_actions_key
-                chmod 600 ./github_actions_key
+                echo "${{ secrets.SSH_DEPLOYMENT_KEY }}" >> ${{ env.KEY_FILE }}
+                chmod 600 ${{ env.KEY_FILE }}
             - name: Copy the update script on the server
               run: |
-                scp -P 2222 -i ./github_actions_key ./update.sh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }}:$UPDATE_SCRIPT
+                scp -P 2222 -i ${{ env.KEY_FILE }} ./update.sh ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }}:$UPDATE_SCRIPT
             - name: SSH Deploy
               uses:  appleboy/ssh-action@v0.1.9
               with:
                 host: ${{ secrets.DEPLOYMENT_LOCAL_HOST }}
                 username: ${{ secrets.DEPLOYMENT_USER }}
-                key: ${{ secrets.SSH_DEPLOYMENT_KEY }}
+                key: ${{ env.KEY_FILE }}
                 port: 2222
                 envs: |
                     UPDATE_SCRIPT=${{ env.UPDATE_SCRIPT }}
