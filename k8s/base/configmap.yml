@@ -1,0 +1,12 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: bugtracker-configmap
+  namespace: default
+data:
+  key: default
+  DJANGO_SETTINGS_MODULE: bugtracker.settings.stage
+  DEBUG: "False"
+  DJANGO_PORT: "8001"
+  ENV_TYPE: "prod"
+  DJANGO_SERVICE_NAME: django-service
