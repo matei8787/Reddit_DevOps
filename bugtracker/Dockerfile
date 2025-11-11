@@ -26,7 +26,8 @@ RUN apt update && apt install -y netcat-openbsd && \
 # Create necessary users and directories
 RUN adduser --system --group app && \
     mkdir -p ${APP_HOME} \
-    mkdir -p ${APP_HOME}/staticfiles
+    mkdir -p ${APP_HOME}/staticfiles \
+    mkdir -p ${APP_HOME}/logs
 
 WORKDIR ${APP_HOME}
 
