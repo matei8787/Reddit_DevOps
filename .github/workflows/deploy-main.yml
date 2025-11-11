@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} is deploying the app
 
 on:
     workflow_run:
-        workflows: ["Docker-Build", ""]
+        workflows: ["Build"]
         types: ["completed"]
 
 jobs:
