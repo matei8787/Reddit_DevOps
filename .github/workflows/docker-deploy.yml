@@ -58,6 +58,6 @@ jobs:
                 (crontab -l 2>/dev/null; echo "0 * * * * $UPDATE_SCRIPT >> ${UPDATE_SCRIPT%/*}/update.log 2>&1") | crontab -
                 $UPDATE_SCRIPT
                 cd ~
-                docker compose -f docker-compose.stage.yml exec -T web python manage.py migrate
-                docker compose -f docker-compose.stage.yml exec -T web python manage.py collectstatic
+                docker-compose -f docker-compose.stage.yml exec -T web python manage.py migrate
+                docker-compose -f docker-compose.stage.yml exec -T web python manage.py collectstatic
                 EOF
