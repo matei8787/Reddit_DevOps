@@ -1,5 +1,5 @@
 upstream django {
-    server $DJANGO_SERVICE_NAME:$DJANGO_PORT
+    server $DJANGO_SERVICE_NAME:$DJANGO_PORT;
 }
 
 server 
