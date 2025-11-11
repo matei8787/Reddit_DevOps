@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} is building the Docker image
 on:
     push:
         branches:
-            - cicd_checkpoint
+            - main
 
 jobs:
     build:
