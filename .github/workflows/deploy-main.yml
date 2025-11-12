@@ -12,6 +12,7 @@ jobs:
         env:
             KEY_FILE: ./github_actions_key
             SSH_PORT: 22
+            UPDATE_SCRIPT: /home/${{ secrets.DEPLOYMENT_USER }}/update.sh
         name: Deploy the app
         runs-on: self-hosted
         steps:
