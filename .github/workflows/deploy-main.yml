@@ -11,6 +11,7 @@ jobs:
         environment: stage
         env:
             KEY_FILE: ./github_actions_key
+            SSH_PORT: 22
         name: Deploy the app
         runs-on: self-hosted
         steps:
@@ -40,9 +41,9 @@ jobs:
                 chmod 600 ${{ env.KEY_FILE }}
             - name: Copy the update script on the server
               run: |
-                scp -P 22 -i ${{ env.KEY_FILE }} update.sh docker-compose.stage.yml .env/.stage .env/.db nginx/env/stage.env \
+                scp -P ${{ env.SSH_PORT }} -i ${{ env.KEY_FILE }} update.sh docker-compose.stage.yml .env/.stage .env/.db nginx/env/stage.env \
                 ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }}:${UPDATE_SCRIPT%/*}
-                ssh -p 22 -i ${{ env.KEY_FILE }} ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }} "UPDATE_SCRIPT='$UPDATE_SCRIPT' bash -s" << 'EOF'
+                ssh -p ${{ env.SSH_PORT }} -i ${{ env.KEY_FILE }} ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }} "UPDATE_SCRIPT='$UPDATE_SCRIPT' bash -s" << 'EOF'
                 mkdir -p ${UPDATE_SCRIPT%/*}/.env && \
                 mkdir -p ${UPDATE_SCRIPT%/*}/nginx/env && \
                 mv .stage .env/.stage && \
@@ -51,7 +52,7 @@ jobs:
                 EOF
             - name: SSH Deploy
               run: |
-                ssh -i ${{ env.KEY_FILE }} -p 22 ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }} "UPDATE_SCRIPT='$UPDATE_SCRIPT' bash -s" << 'EOF'
+                ssh -i ${{ env.KEY_FILE }} -p ${{ env.SSH_PORT }} ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }} "UPDATE_SCRIPT='$UPDATE_SCRIPT' bash -s" << 'EOF'
                 chmod +x $UPDATE_SCRIPT && \
                 (crontab -l 2>/dev/null | grep -qxF "0 * * * * $UPDATE_SCRIPT >> ${UPDATE_SCRIPT%/*}/update.log 2>&1") || \
                 (crontab -l 2>/dev/null; echo "0 * * * * $UPDATE_SCRIPT >> ${UPDATE_SCRIPT%/*}/update.log 2>&1") | crontab -
@@ -68,4 +69,3 @@ jobs:
                 rm -rf .env && \
                 rm -rf nginx/env && \
                 rm -rf k8s
-
