@@ -42,8 +42,8 @@ jobs:
             - name: Copy the update script on the server
               run: |
                 scp -P ${{ env.SSH_PORT }} -i ${{ env.KEY_FILE }} update.sh docker-compose.stage.yml .env/.stage .env/.db nginx/env/stage.env \
-                ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }}:${UPDATE_SCRIPT%/*}
-                ssh -p ${{ env.SSH_PORT }} -i ${{ env.KEY_FILE }} ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }} "UPDATE_SCRIPT='$UPDATE_SCRIPT' bash -s" << 'EOF'
+                ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }}:${UPDATE_SCRIPT%/*}
+                ssh -p ${{ env.SSH_PORT }} -i ${{ env.KEY_FILE }} ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }} "UPDATE_SCRIPT='$UPDATE_SCRIPT' bash -s" << 'EOF'
                 mkdir -p ${UPDATE_SCRIPT%/*}/.env && \
                 mkdir -p ${UPDATE_SCRIPT%/*}/nginx/env && \
                 mv .stage .env/.stage && \
@@ -52,7 +52,7 @@ jobs:
                 EOF
             - name: SSH Deploy
               run: |
-                ssh -i ${{ env.KEY_FILE }} -p ${{ env.SSH_PORT }} ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_LOCAL_HOST }} "UPDATE_SCRIPT='$UPDATE_SCRIPT' bash -s" << 'EOF'
+                ssh -i ${{ env.KEY_FILE }} -p ${{ env.SSH_PORT }} ${{ secrets.DEPLOYMENT_USER }}@${{ secrets.DEPLOYMENT_HOST }} "UPDATE_SCRIPT='$UPDATE_SCRIPT' bash -s" << 'EOF'
                 chmod +x $UPDATE_SCRIPT && \
                 (crontab -l 2>/dev/null | grep -qxF "0 * * * * $UPDATE_SCRIPT >> ${UPDATE_SCRIPT%/*}/update.log 2>&1") || \
                 (crontab -l 2>/dev/null; echo "0 * * * * $UPDATE_SCRIPT >> ${UPDATE_SCRIPT%/*}/update.log 2>&1") | crontab -
