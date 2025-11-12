@@ -10,7 +10,6 @@ jobs:
     deploy:
         environment: stage
         env:
-            UPDATE_SCRIPT: /home/${{ secrets.DEPLOYMENT_USER }}/update.sh
             KEY_FILE: ./github_actions_key
         name: Deploy the app
         runs-on: self-hosted

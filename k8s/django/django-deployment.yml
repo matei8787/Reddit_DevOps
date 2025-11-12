@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name:  django-web-deployment
-  namespace: default
+  namespace: bugtracker
   labels:
     app:  django-web-deployment
 spec:
