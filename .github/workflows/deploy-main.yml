@@ -61,8 +61,6 @@ jobs:
                 cd ~
                 docker-compose -f docker-compose.stage.yml exec -T web python manage.py migrate
                 docker-compose -f docker-compose.stage.yml exec -T web python manage.py collectstatic
-                rm -rf .env/
-                rm -rf nginx/env/
                 EOF
             - name: delete env and keys
               run: |
