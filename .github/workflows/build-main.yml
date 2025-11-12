@@ -43,10 +43,6 @@ jobs:
                 username: ${{ github.actor }}
                 password: ${{ secrets.GITHUB_TOKEN }}
             - name: Push the images
-              run: |
-                    images=("ghcr.io/matei8787/reddit_devops-web:latest" "ghcr.io/matei8787/reddit_devops-nginx:latest")
-                    for image in "${images[@]}"; do
-                        docker-compose -f docker-compose.stage.yml push
-                    done
+              run: docker-compose -f docker-compose.stage.yml push 
             - name: Delete environment variables
               run: rm -rf .env
